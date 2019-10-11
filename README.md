@@ -10,6 +10,6 @@ This application was not originally developed by me but I've fixed it up a bit a
 If you know the original developer of this program, please contact me via Discord so I can give them proper credit. 
 <br>
 <br>
-![xqcL](https://5E7EN.me/assets/images/xqcL.png)
+<img src="https://5E7EN.me/assets/images/xqcL.png" alt="xqcL" height="30" width="30">
 <br>
-<b>Tag: Simon();#0001</b>
+<b>Simon();#0001</b>

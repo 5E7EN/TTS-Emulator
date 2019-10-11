@@ -1,0 +1,108 @@
+<!-- Original Site: https://5E7EN.me/tts -->
+<html>
+  <head>
+    <title>Brian TTS Reader</title>
+
+    <style>
+      textarea {
+        padding: 12px 20px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+
+      button {
+        background-color: #4caf50;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      div {
+        border-radius: 5px;
+        background-color: #f2f2f2;
+        padding: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="view">
+      <h3>Brian TTS Reader (StreamElements API)</h3>
+      <textarea
+        id="text"
+        rows="15"
+        cols="80"
+        maxlength="500"
+        placeholder="Enter text here..."
+      ></textarea>
+      <br />
+      <audio id="audio" controls="">
+        <source id="source" type="audio/wav" />
+      </audio>
+      <br />
+      <button type="submit" id="button">PLAY</button>
+      <br />
+      Number of Characters: <span id="message">0</span>
+      <br />
+      <br />
+      <hr />
+      <br />
+      <img src="xqcL.png" alt="xqcL" style="width:25px;height:25px;" />
+      <br />
+      <b
+        >Discord: Simon();#0001<br />
+        Twitch:
+        <a href="https://www.twitch.tv/simon36" target="_blank">Simon36</a></b
+      >
+      <br />
+      <a href="https://github.com/5E7EN/TTS-Emulator" target="_blank"
+        >(Source Code)</a
+      >
+
+      <script>
+        document.getElementById("text").oninput = function() {
+          document.getElementById(
+            "message"
+          ).innerHTML = document.getElementById("text").value.length;
+        };
+
+        document.getElementById("button").onclick = async function() {
+          let text = document.getElementById("text").value;
+
+          if (text === "") {
+            alert("You must enter some text...");
+            return;
+          }
+
+          let speak = await fetch(
+            "https://api.streamelements.com/kappa/v2/speech?voice=Brian&text=" +
+              encodeURIComponent(text.trim())
+          );
+
+          if (speak.status != 200) {
+            alert(await speak.text());
+            return;
+          }
+
+          let mp3 = await speak.blob();
+
+          let blobUrl = URL.createObjectURL(mp3);
+          document.getElementById("source").setAttribute("src", blobUrl);
+          let audio = document.getElementById("audio");
+          audio.pause();
+          audio.load();
+          audio.play();
+        };
+      </script>
+    </div>
+  </body>
+</html>

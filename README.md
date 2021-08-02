@@ -1,4 +1,4 @@
-<b>Original Site: [https://5E7EN.me/tts](https:/5E7EN.me/tts)</b>
+<b>Original Site: [https://tts.5e7en.me](https://tts.5e7en.me)</b>
 
 # Brian TTS Emulator
 

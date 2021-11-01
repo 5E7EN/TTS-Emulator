@@ -1,108 +1,110 @@
 <!-- Original Site: https://tts.5E7EN.me -->
 <html>
-  <head>
-    <title>Brian TTS Reader</title>
+    <head>
+        <title>Brian TTS Reader</title>
 
-    <style>
-      textarea {
-        padding: 12px 20px;
-        margin: 8px 0;
-        display: inline-block;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-      }
+        <style>
+            textarea {
+                padding: 12px 20px;
+                margin: 8px 0;
+                display: inline-block;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box;
+            }
 
-      button {
-        background-color: #4caf50;
-        color: white;
-        padding: 14px 20px;
-        margin: 8px 0;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-      }
+            button {
+                background-color: #4caf50;
+                color: white;
+                padding: 14px 20px;
+                margin: 8px 0;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
 
-      button:hover {
-        background-color: #45a049;
-      }
+            button:hover {
+                background-color: #45a049;
+            }
 
-      div {
-        border-radius: 5px;
-        background-color: #f2f2f2;
-        padding: 20px;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="view">
-      <h3>Brian TTS Reader (Powered by StreamElements)</h3>
-      <textarea
-        id="text"
-        rows="15"
-        cols="80"
-        maxlength="500"
-        placeholder="Enter text here..."
-      ></textarea>
-      <br />
-      <audio id="audio" controls="">
-        <source id="source" type="audio/wav" />
-      </audio>
-      <br />
-      <button type="submit" id="button">PLAY</button>
-      <br />
-      Number of Characters: <span id="message">0</span>
-      <br />
-      <br />
-      <hr />
-      <br />
-      <img src="xqcL.png" alt="xqcL" style="width:25px;height:25px;" />
-      <br />
-      <b
-        >Discord: Simon.#0001<br />
-        Twitch:
-        <a href="https://www.twitch.tv/Yup_Its_Simon" target="_blank">Yup_Its_Simon</a></b
-      >
-      <br />
-      <a href="https://github.com/5E7EN/TTS-Emulator" target="_blank"
-        >(Source Code)</a
-      >
+            div {
+                border-radius: 5px;
+                background-color: #f2f2f2;
+                padding: 20px;
+            }
+        </style>
 
-      <script>
-        document.getElementById("text").oninput = function() {
-          document.getElementById(
-            "message"
-          ).innerHTML = document.getElementById("text").value.length;
-        };
+        <script type="text/javascript">
+            (function (c, l, a, r, i, t, y) {
+                c[a] =
+                    c[a] ||
+                    function () {
+                        (c[a].q = c[a].q || []).push(arguments);
+                    };
+                t = l.createElement(r);
+                t.async = 1;
+                t.src = 'https://www.clarity.ms/tag/' + i;
+                y = l.getElementsByTagName(r)[0];
+                y.parentNode.insertBefore(t, y);
+            })(window, document, 'clarity', 'script', '94d2xiy0fi');
+        </script>
+    </head>
+    <body>
+        <div id="view">
+            <h3>Brian TTS Reader (Powered by StreamElements)</h3>
+            <textarea id="text" rows="15" cols="80" maxlength="500" placeholder="Enter text here..."></textarea>
+            <br />
+            <audio id="audio" controls="">
+                <source id="source" type="audio/wav" />
+            </audio>
+            <br />
+            <button type="submit" id="button">PLAY</button>
+            <br />
+            Number of Characters: <span id="message">0</span>
+            <br />
+            <br />
+            <hr />
+            <br />
+            <img src="xqcL.png" alt="xqcL" style="width: 25px; height: 25px" />
+            <br />
+            <b
+                >Discord: Simon.#0001<br />
+                Twitch:
+                <a href="https://www.twitch.tv/Yup_Its_Simon" target="_blank">Yup_Its_Simon</a></b
+            >
+            <br />
+            <a href="https://github.com/5E7EN/TTS-Emulator" target="_blank">(Source Code)</a>
 
-        document.getElementById("button").onclick = async function() {
-          let text = document.getElementById("text").value;
+            <script>
+                document.getElementById('text').oninput = function () {
+                    document.getElementById('message').innerHTML = document.getElementById('text').value.length;
+                };
 
-          if (text === "") {
-            alert("You must enter some text...");
-            return;
-          }
+                document.getElementById('button').onclick = async function () {
+                    let text = document.getElementById('text').value;
 
-          let speak = await fetch(
-            "https://api.streamelements.com/kappa/v2/speech?voice=Brian&text=" +
-              encodeURIComponent(text.trim())
-          );
+                    if (text === '') {
+                        alert('You must enter some text...');
+                        return;
+                    }
 
-          if (speak.status != 200) {
-            alert(await speak.text());
-            return;
-          }
+                    let speak = await fetch('https://api.streamelements.com/kappa/v2/speech?voice=Brian&text=' + encodeURIComponent(text.trim()));
 
-          let mp3 = await speak.blob();
+                    if (speak.status != 200) {
+                        alert(await speak.text());
+                        return;
+                    }
 
-          let blobUrl = URL.createObjectURL(mp3);
-          document.getElementById("source").setAttribute("src", blobUrl);
-          let audio = document.getElementById("audio");
-          audio.pause();
-          audio.load();
-          audio.play();
-        };
-      </script>
-    </div>
-  </body>
+                    let mp3 = await speak.blob();
+
+                    let blobUrl = URL.createObjectURL(mp3);
+                    document.getElementById('source').setAttribute('src', blobUrl);
+                    let audio = document.getElementById('audio');
+                    audio.pause();
+                    audio.load();
+                    audio.play();
+                };
+            </script>
+        </div>
+    </body>
 </html>

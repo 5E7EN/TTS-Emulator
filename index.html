@@ -78,11 +78,7 @@
             <a href="https://github.com/5E7EN/TTS-Emulator" target="_blank">(Source Code)</a>
 
             <script>
-                document.getElementById('text').oninput = function () {
-                    document.getElementById('message').innerHTML = document.getElementById('text').value.length;
-                };
-
-                document.getElementById('button').onclick = async function () {
+                async function submit() {
                     let text = document.getElementById('text').value;
 
                     if (text === '') {
@@ -105,7 +101,19 @@
                     audio.pause();
                     audio.load();
                     audio.play();
+                }
+
+                document.getElementById('text').oninput = function () {
+                    document.getElementById('message').innerHTML = document.getElementById('text').value.length;
                 };
+
+                document.getElementById('text').onkeydown = function (e) {
+                    if ((event.keyCode == 10 || event.keyCode == 13) && event.ctrlKey) {
+                        submit()
+                    }
+                };
+
+                document.getElementById('button').onclick = submit;
             </script>
         </div>
     </body>

@@ -4,33 +4,202 @@
         <title>Brian TTS Reader</title>
 
         <style>
-            textarea {
-                padding: 12px 20px;
-                margin: 8px 0;
-                display: inline-block;
-                border: 1px solid #ccc;
-                border-radius: 4px;
+            body {
+                background-color: #121212;
+                color: #e0e0e0;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                margin: 0;
+                padding: 10px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
                 box-sizing: border-box;
             }
 
-            button {
-                background-color: #4caf50;
-                color: white;
-                padding: 14px 20px;
-                margin: 8px 0;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-            }
-
-            button:hover {
-                background-color: #45a049;
-            }
-
-            div {
-                border-radius: 5px;
-                background-color: #f2f2f2;
+            div#view {
+                background-color: #1e1e1e;
                 padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 0 20px rgba(0, 188, 212, 0.3);
+                width: auto;
+                max-width: 700px;
+                text-align: center;
+            }
+
+            h3 {
+                color: #00bcd4;
+                margin-top: 0;
+                margin-bottom: 15px;
+                font-size: 22px;
+                font-weight: 300;
+            }
+
+            textarea#text {
+                width: 100%;
+                padding: 10px;
+                margin: 8px 0 15px 0;
+                display: inline-block;
+                border: 1px solid #333;
+                border-radius: 6px;
+                box-sizing: border-box;
+                background-color: #2a2a2a;
+                color: #e0e0e0;
+                font-size: 15px;
+                line-height: 1.4;
+                resize: none;
+            }
+
+            textarea#text::placeholder {
+                color: #777;
+            }
+
+            button#button {
+                background-color: #00bcd4;
+                color: #121212;
+                padding: 10px 20px;
+                margin: 8px 0 15px 0;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 15px;
+                font-weight: bold;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+            }
+
+            button#button:hover {
+                background-color: #0097a7;
+                box-shadow: 0 0 15px rgba(0, 188, 212, 0.5);
+                transform: translateY(-2px);
+            }
+
+            button#button:active {
+                transform: translateY(0px);
+            }
+
+            audio#audio {
+                margin-top: 10px;
+                margin-bottom: 15px;
+                width: 100%;
+                border-radius: 6px;
+            }
+
+            audio#audio::-webkit-media-controls-panel {
+                background-color: #2a2a2a;
+                border-radius: 6px;
+            }
+
+            audio#audio::-webkit-media-controls-play-button,
+            audio#audio::-webkit-media-controls-volume-slider,
+            audio#audio::-webkit-media-controls-mute-button,
+            audio#audio::-webkit-media-controls-timeline,
+            audio#audio::-webkit-media-controls-current-time-display,
+            audio#audio::-webkit-media-controls-time-remaining-display,
+            audio#audio::-webkit-media-controls-fullscreen-button {
+                filter: invert(100%) sepia(20%) saturate(100%) hue-rotate(180deg) brightness(100%) contrast(90%);
+                border-radius: 4px;
+            }
+
+            span#message {
+                color: #00bcd4;
+                font-weight: normal;
+                font-size: 13px;
+                display: inline-block;
+                margin-bottom: 15px;
+            }
+
+            hr {
+                border: 0;
+                border-top: 1px solid #333;
+                margin: 15px 0;
+            }
+
+            img[alt='xqcL'] {
+                vertical-align: middle;
+                margin-right: 5px;
+                filter: grayscale(30%) brightness(1.2);
+                width: 20px;
+                height: 20px;
+            }
+
+            a {
+                color: #00bcd4;
+                text-decoration: none;
+                transition: color 0.3s ease, text-shadow 0.3s ease;
+            }
+
+            a:hover {
+                color: #1cffff;
+                text-decoration: none;
+                text-shadow: 0 0 5px rgba(0, 188, 212, 0.7);
+            }
+
+            body div#view > b {
+                font-weight: normal;
+                line-height: 1.5;
+                font-size: 13px;
+                color: #aaa;
+            }
+
+            .credits {
+                font-size: 12px;
+                color: #888;
+                margin-top: 15px;
+                margin-bottom: 5px;
+            }
+
+            button#downloadButton {
+                background-color: #00bcd4;
+                color: #121212;
+                padding: 10px 20px;
+                margin: 8px 0 15px 8px;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 15px;
+                font-weight: bold;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+            }
+
+            button#downloadButton:hover:not(:disabled) {
+                background-color: #0097a7;
+                box-shadow: 0 0 15px rgba(0, 188, 212, 0.5);
+                transform: translateY(-2px);
+            }
+
+            button#downloadButton:active:not(:disabled) {
+                transform: translateY(0px);
+            }
+
+            button#downloadButton:disabled {
+                background-color: #555;
+                color: #888;
+                cursor: not-allowed;
+                box-shadow: none;
+                transform: none;
+            }
+
+            #newLookBanner {
+                position: fixed;
+                padding: 7px 0;
+                width: 180px;
+                background-color: #4a4e5a; /* Dark metallic gray/blue */
+                color: #00bcd4; /* Accent color for text */
+                border: 1px solid #00bcd4; /* Accent color border */
+                text-align: center;
+                font-size: 14px;
+                font-weight: bold;
+                box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4); /* Adjusted shadow for more depth */
+                z-index: 1000;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                top: 26px;
+                right: -50px;
+                transform: rotate(45deg);
             }
         </style>
 
@@ -52,55 +221,89 @@
         <script data-ad-client="ca-pub-1912047402498372" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     </head>
     <body>
+        <div id="newLookBanner">NEW LOOK!</div>
         <div id="view">
-            <h3>Brian TTS Reader (Powered by StreamElements)</h3>
-            <textarea id="text" rows="15" cols="80" maxlength="500" placeholder="Enter text here..."></textarea>
+            <h3>Brian TTS Reader</h3>
+            <textarea id="text" rows="8" cols="80" maxlength="500" placeholder="Enter text here..."></textarea>
             <br />
             <audio id="audio" controls="">
                 <source id="source" type="audio/wav" />
             </audio>
             <br />
             <button type="submit" id="button">PLAY</button>
+            <button type="button" id="downloadButton" disabled>DOWNLOAD</button>
             <br />
             Number of Characters: <span id="message">0</span>
-            <br />
-            <br />
             <hr />
             <br />
             <img src="xqcL.png" alt="xqcL" style="width: 25px; height: 25px" />
             <br />
-            <b
-                >Discord: Simon.#8433<br />
-                Twitch:
-                <a href="https://www.twitch.tv/Simon36" target="_blank">Simon36</a></b
-            >
-            <br />
-            <a href="https://github.com/5E7EN/TTS-Emulator" target="_blank">(Source Code)</a>
+            <p class="credits">Powered by StreamElements</p>
+            <a href="https://github.com/5E7EN/TTS-Emulator" target="_blank">Source Code</a>
 
             <script>
+                let currentBlobUrl = null;
+
                 async function submit() {
+                    document.getElementById('downloadButton').disabled = true; // Disable download button during processing
                     let text = document.getElementById('text').value;
 
-                    if (text === '') {
-                        alert('You must enter some text...');
+                    // If the text is empty, ignore
+                    if (text === '') return;
+
+                    try {
+                        let speak = await fetch('https://api.streamelements.com/kappa/v2/speech?voice=Brian&text=' + encodeURIComponent(text.trim()));
+
+                        if (speak.status != 200) {
+                            alert('Error from API: ' + (await speak.text()));
+                            return;
+                        }
+
+                        let mp3 = await speak.blob();
+
+                        // Revoke previous blob URL if it exists to free up memory
+                        if (currentBlobUrl) {
+                            URL.revokeObjectURL(currentBlobUrl);
+                        }
+
+                        // Store for download and playback
+                        currentBlobUrl = URL.createObjectURL(mp3);
+                        document.getElementById('source').setAttribute('src', currentBlobUrl);
+                        let audio = document.getElementById('audio');
+                        audio.pause();
+                        audio.load();
+                        audio.play();
+                        // Enable download button
+                        document.getElementById('downloadButton').disabled = false;
+                    } catch (error) {
+                        console.error('Error fetching or playing TTS:', error);
+                        alert('An error occurred: ' + error.message);
+                        document.getElementById('downloadButton').disabled = true;
+                    }
+                }
+
+                function downloadAudio() {
+                    if (!currentBlobUrl) {
+                        alert('No audio has been generated yet. Please play an audio first.');
                         return;
                     }
+                    const link = document.createElement('a');
+                    link.href = currentBlobUrl;
 
-                    let speak = await fetch('https://api.streamelements.com/kappa/v2/speech?voice=Brian&text=' + encodeURIComponent(text.trim()));
-
-                    if (speak.status != 200) {
-                        alert(await speak.text());
-                        return;
+                    let textForFilename = document
+                        .getElementById('text')
+                        .value.trim()
+                        .substring(0, 30)
+                        .replace(/[^\w\s-]/g, '')
+                        .replace(/\s+/g, '_');
+                    if (!textForFilename) {
+                        textForFilename = 'tts_audio';
                     }
+                    link.download = `${textForFilename}_Brian.wav`;
 
-                    let mp3 = await speak.blob();
-
-                    let blobUrl = URL.createObjectURL(mp3);
-                    document.getElementById('source').setAttribute('src', blobUrl);
-                    let audio = document.getElementById('audio');
-                    audio.pause();
-                    audio.load();
-                    audio.play();
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
                 }
 
                 document.getElementById('text').oninput = function () {
@@ -108,12 +311,20 @@
                 };
 
                 document.getElementById('text').onkeydown = function (e) {
-                    if ((event.keyCode == 10 || event.keyCode == 13) && event.ctrlKey) {
-                        submit()
+                    // Use e.key for modern browsers, fallback to keyCode
+                    if ((e.key === 'Enter' || e.keyCode === 10 || e.keyCode === 13) && (e.ctrlKey || e.metaKey)) {
+                        // Prevent default action (like newline in textarea if not handled)
+                        e.preventDefault();
+                        submit();
                     }
                 };
 
                 document.getElementById('button').onclick = submit;
+                // Ensure downloadButton exists before attaching listener, though it should.
+                const downloadBtn = document.getElementById('downloadButton');
+                if (downloadBtn) {
+                    downloadBtn.onclick = downloadAudio;
+                }
             </script>
         </div>
     </body>

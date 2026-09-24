@@ -1,9 +1,10 @@
-<!-- Original Site: https://tts.5E7EN.me -->
+<!-- Original Site: https://tts.5E7EN.me (modified to use ElevenLabs TTS) -->
 <html>
     <head>
         <title>Brian TTS Reader</title>
 
         <style>
+            /* ===== Page layout ===== */
             body {
                 background-color: #121212;
                 color: #e0e0e0;
@@ -17,6 +18,7 @@
                 box-sizing: border-box;
             }
 
+            /* ===== Main card container ===== */
             div#view {
                 background-color: #1e1e1e;
                 padding: 20px;
@@ -35,6 +37,7 @@
                 font-weight: 300;
             }
 
+            /* ===== Text input box ===== */
             textarea#text {
                 width: 100%;
                 padding: 10px;
@@ -54,6 +57,7 @@
                 color: #777;
             }
 
+            /* ===== PLAY button ===== */
             button#button {
                 background-color: #00bcd4;
                 color: #121212;
@@ -79,6 +83,7 @@
                 transform: translateY(0px);
             }
 
+            /* ===== Audio player ===== */
             audio#audio {
                 margin-top: 10px;
                 margin-bottom: 15px;
@@ -150,6 +155,7 @@
                 margin-bottom: 5px;
             }
 
+            /* ===== DOWNLOAD button ===== */
             button#downloadButton {
                 background-color: #00bcd4;
                 color: #121212;
@@ -203,6 +209,7 @@
             }
         </style>
 
+        <!-- Microsoft Clarity analytics snippet (unrelated to TTS functionality) -->
         <script type="text/javascript">
             (function (c, l, a, r, i, t, y) {
                 c[a] =
@@ -218,18 +225,24 @@
             })(window, document, 'clarity', 'script', '94daxaeywm');
         </script>
 
+        <!-- Google AdSense script (unrelated to TTS functionality) -->
         <script data-ad-client="ca-pub-1912047402498372" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     </head>
     <body>
         <div id="newLookBanner">NEW LOOK!</div>
         <div id="view">
             <h3>Brian TTS Reader</h3>
+
+            <!-- Where the user types the text to convert to speech -->
             <textarea id="text" rows="8" cols="80" maxlength="500" placeholder="Enter text here..."></textarea>
             <br />
+
+            <!-- Audio player; its "src" gets set dynamically once ElevenLabs returns audio -->
             <audio id="audio" controls="">
-                <source id="source" type="audio/wav" />
+                <source id="source" type="audio/mpeg" />
             </audio>
             <br />
+
             <button type="submit" id="button">PLAY</button>
             <button type="button" id="downloadButton" disabled>DOWNLOAD</button>
             <br />
@@ -238,12 +251,28 @@
             <br />
             <img src="xqcL.png" alt="xqcL" style="width: 25px; height: 25px" />
             <br />
-            <p class="credits">Powered by StreamElements</p>
+            <p class="credits">Powered by ElevenLabs</p>
             <a href="https://github.com/5E7EN/TTS-Emulator" target="_blank">Source Code</a>
 
             <script>
+                // =========================================================
+                // ElevenLabs configuration
+                // =========================================================
+                // IMPORTANT: this key is visible to anyone who views this
+                // page's source or opens dev tools. Only use this file
+                // locally / privately — never host it publicly with a real
+                // key inside.
+                const ELEVENLABS_API_KEY = 'sk_682fae8d55f2d55b5e2fbab0c63cbed047a66d1ebc290207'; // <-- paste your ElevenLabs API key here
+                const ELEVENLABS_VOICE_ID = 'nPczCjzI2devNBz1zQrb'; // ElevenLabs' "Brian" voice
+                const ELEVENLABS_MODEL_ID = 'eleven_multilingual_v2';
+
+                // Keeps track of the current generated audio's blob URL so
+                // we can revoke it later (avoids memory leaks) and reuse it
+                // for the download button.
                 let currentBlobUrl = null;
 
+                // Called when the user clicks PLAY (or presses Ctrl/Cmd+Enter).
+                // Sends the typed text to ElevenLabs and plays back the result.
                 async function submit() {
                     document.getElementById('downloadButton').disabled = true; // Disable download button during processing
                     let text = document.getElementById('text').value;
@@ -252,13 +281,34 @@
                     if (text === '') return;
 
                     try {
-                        let speak = await fetch('https://api.streamelements.com/kappa/v2/speech?voice=Brian&text=' + encodeURIComponent(text.trim()));
+                        // POST request to ElevenLabs' text-to-speech endpoint.
+                        // The API key goes in the "xi-api-key" header (not the URL).
+                        let speak = await fetch(
+                            `https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}`,
+                            {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'xi-api-key': ELEVENLABS_API_KEY
+                                },
+                                body: JSON.stringify({
+                                    text: text.trim(),
+                                    model_id: ELEVENLABS_MODEL_ID,
+                                    voice_settings: {
+                                        stability: 0.5,
+                                        similarity_boost: 0.75
+                                    }
+                                })
+                            }
+                        );
 
+                        // ElevenLabs returns non-200 on errors (bad key, quota, etc.)
                         if (speak.status != 200) {
                             alert('Error from API: ' + (await speak.text()));
                             return;
                         }
 
+                        // Successful response body is raw MP3 audio data
                         let mp3 = await speak.blob();
 
                         // Revoke previous blob URL if it exists to free up memory
@@ -282,6 +332,9 @@
                     }
                 }
 
+                // Called when the user clicks DOWNLOAD.
+                // Saves the last generated audio blob as an .mp3 file, named
+                // after the first ~30 characters of the input text.
                 function downloadAudio() {
                     if (!currentBlobUrl) {
                         alert('No audio has been generated yet. Please play an audio first.');
@@ -290,6 +343,7 @@
                     const link = document.createElement('a');
                     link.href = currentBlobUrl;
 
+                    // Build a filesystem-safe filename from the input text
                     let textForFilename = document
                         .getElementById('text')
                         .value.trim()
@@ -299,18 +353,22 @@
                     if (!textForFilename) {
                         textForFilename = 'tts_audio';
                     }
-                    link.download = `${textForFilename}_Brian.wav`;
+                    link.download = `${textForFilename}_Brian.mp3`;
 
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
                 }
 
+                // Live character counter; also re-disables the download
+                // button whenever the text changes (old audio no longer matches).
                 document.getElementById('text').oninput = function () {
                     document.getElementById('message').innerHTML = document.getElementById('text').value.length;
                     document.getElementById('downloadButton').disabled = true;
                 };
 
+                // Keyboard shortcut: Ctrl/Cmd + Enter triggers PLAY without
+                // needing to click the button.
                 document.getElementById('text').onkeydown = function (e) {
                     // Use e.key for modern browsers, fallback to keyCode
                     if ((e.key === 'Enter' || e.keyCode === 10 || e.keyCode === 13) && (e.ctrlKey || e.metaKey)) {
@@ -320,6 +378,7 @@
                     }
                 };
 
+                // Wire up button click handlers
                 document.getElementById('button').onclick = submit;
                 // Ensure downloadButton exists before attaching listener, though it should.
                 const downloadBtn = document.getElementById('downloadButton');
